@@ -243,4 +243,4 @@ The executor defines **how and where tasks are executed**.
 
 ---
 
-✅ **This document is interview-ready and printable.**
+
