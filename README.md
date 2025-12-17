@@ -2,17 +2,17 @@
 
 ---
 
-## 1️⃣ Introduction to Apache Airflow
+## 1️ Introduction to Apache Airflow
 
-**Interview Definition:**
+**Definition:**
 Apache Airflow is an **open-source workflow orchestration tool** used to **schedule, monitor, and manage data pipelines** using code.
 
-⚠️ **Important (Very Common Trap):**
+**Important:**
 
 * ❌ Airflow is **NOT** an ETL tool
 * ✅ Airflow **orchestrates** tasks, it does not process data
 
-**One-liner for interviews:**
+**One-liner**
 
 > “Airflow orchestrates *when* and *in what order* tasks run.”
 
@@ -24,7 +24,7 @@ Apache Airflow is an **open-source workflow orchestration tool** used to **sched
 
 ### 1.1.1 DAG Definition
 
-**Interview Question:** What is a DAG in Airflow?
+**Question:** What is a DAG in Airflow?
 
 **Answer:**
 A DAG (Directed Acyclic Graph) is a **Python-defined workflow** that represents tasks and their execution order **without loops**.
@@ -58,7 +58,7 @@ A cooking recipe — steps must follow a fixed order.
 
 ### 1.1.2 Operators
 
-**Interview Question:** What are Operators in Airflow?
+**Question:** What are Operators in Airflow?
 
 **Answer:**
 Operators define **what action** a task performs (e.g., run a script, execute Python code, trigger another DAG).
@@ -74,7 +74,7 @@ BashOperator(
 )
 ```
 
-⚠️ **Interview Gold:**
+**Gold Point:**
 
 * Operator is a **template**
 * Task is an **instance of an operator**
@@ -83,7 +83,7 @@ BashOperator(
 
 ### 1.1.3 Tasks
 
-**Interview Question:** What is a Task?
+**Question:** What is a Task?
 
 **Answer:**
 A task is a **single, atomic unit of execution** created by instantiating an operator inside a DAG.
@@ -110,7 +110,7 @@ task1 >> task2
 extract → load
 ```
 
-**Interview phrase:**
+**One Line phrase:**
 
 > “Tasks should be independent, atomic, and idempotent.”
 
@@ -118,7 +118,7 @@ extract → load
 
 ### 1.1.4 DAG to DAG Trigger
 
-**Interview Question:** Can one DAG trigger another DAG?
+**Question:** Can one DAG trigger another DAG?
 
 ✅ Yes, using `TriggerDagRunOperator`
 
@@ -139,7 +139,7 @@ TriggerDagRunOperator(
 * Validation DAG starts
 * Reporting DAG starts
 
-**Interview line:**
+**One line:**
 
 > “DAG-to-DAG triggering enables modular and loosely coupled workflows.”
 
@@ -147,7 +147,7 @@ TriggerDagRunOperator(
 
 ## 1.2 Scheduler
 
-**Interview Question:** What is the Scheduler?
+**Question:** What is the Scheduler?
 
 **Answer:**
 The scheduler continuously monitors DAGs and decides **when tasks should run** based on schedules and dependencies.
@@ -162,7 +162,7 @@ The scheduler continuously monitors DAGs and decides **when tasks should run** b
 
 * Execute tasks
 
-**Interview one-liner:**
+**one-liner:**
 
 > “Scheduler decides *when* tasks run, not *how* they run.”
 
@@ -170,7 +170,7 @@ The scheduler continuously monitors DAGs and decides **when tasks should run** b
 
 ## 1.3 Executor
 
-**Interview Question:** What is an Executor?
+**Question:** What is an Executor?
 
 **Answer:**
 The executor defines **how and where tasks are executed**.
@@ -193,7 +193,7 @@ The executor defines **how and where tasks are executed**.
 
 ## 1.4 Operators (Types)
 
-**Interview Question:** What are the types of operators?
+**Question:** What are the types of operators?
 
 ### Action Operators
 
@@ -218,7 +218,7 @@ The executor defines **how and where tasks are executed**.
 
 ---
 
-## 🧠 Final Interview Summary (Memorize This)
+## Summary 
 
 > “Airflow uses DAGs written in Python to define workflows.
 > The scheduler determines when tasks should run.
@@ -228,12 +228,17 @@ The executor defines **how and where tasks are executed**.
 
 ---
 
-## ⚔️ Rapid-Fire Interview Q&A
+## ⚔️ Rapid-Fire Q&A
 
 * Is Airflow an ETL tool? → ❌ No
 * Does scheduler execute tasks? → ❌ No
 * Can DAGs trigger other DAGs? → ✅ Yes
 * Can tasks share large data? → ❌ No (only metadata via XComs)
+
+
+
+
+
 * Is Airflow streaming? → ❌ Batch orchestration only
 
 ---
