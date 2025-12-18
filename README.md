@@ -238,12 +238,6 @@ The executor defines **how and where tasks are executed**.
 
 ---
 
-# Apache Airflow Operators – Interview Focused Guide ⚙️🎯
-
-This document explains **commonly asked Airflow operators** with **interview-ready definitions**, **clear examples**, **real-world use cases**, and **common traps**.
-
----
-
 ## 1️ PythonOperator
 
 ### Question:
