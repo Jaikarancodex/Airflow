@@ -1,247 +1,291 @@
-## 🚀 Ultra‑Light Apache Airflow (Optimized for 8 GB RAM)
+# 🚀 Apache Airflow on Windows using WSL2 (Optimized for 8 GB RAM)
 
-This setup is **clean, fast, laptop‑friendly**, and **perfect for Airflow basics → intermediate practice**.
-We intentionally **remove Celery, Redis, Triggerer, Flower** and use **LocalExecutor**.
+This guide explains **why and how to run Apache Airflow on Windows using WSL2**, how to **start it daily after restart**, and a **clear comparison of WSL2 vs Docker**.
 
----
+This setup is:
 
-## 🎯 What this optimized setup gives you
-
-✅ Only **3 containers** (Postgres, Scheduler, Webserver)
-✅ No Redis, no Celery workers
-✅ Stable for learning & interviews
-✅ No laptop freezing 🔥
+* ✅ Stable
+* ✅ Industry‑correct
+* ✅ Lightweight for **8 GB RAM**
+* ✅ Closest to real production Linux environments
 
 ---
 
-## 📦 Folder structure (expected)
+## 📌 Why WSL2 (and not native Windows)
+
+Apache Airflow is **Linux‑native**.
+
+Running Airflow directly on Windows often fails due to:
+
+* File‑locking issues (SQLite)
+* NTFS permissions
+* Antivirus / Defender interference
+* Path & symlink problems
+
+👉 **WSL2 provides a real Linux kernel**, so Airflow behaves exactly as intended.
+
+---
+
+## 🧠 Architecture Overview
 
 ```
-airflow-docker/
-├── dags/
-├── logs/
-├── plugins/
-├── config/
-├── docker-compose.yaml
-└── .env
-```
-
----
-
-## 🔑 .env (MUST BE EXACT)
-
-```env
-AIRFLOW_UID=50000
-AIRFLOW_IMAGE_NAME=apache/airflow:2.8.4
-```
-
----
-
-## 🐳 OPTIMIZED docker-compose.yaml
-
-```yaml
-version: "3.8"
-
-x-airflow-common: &airflow-common
-  image: ${AIRFLOW_IMAGE_NAME}
-  env_file:
-    - .env
-  environment:
-    AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__CORE__LOAD_EXAMPLES: "true"
-    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
-    AIRFLOW__CORE__FERNET_KEY: ""
-    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"
-  volumes:
-    - ./dags:/opt/airflow/dags
-    - ./logs:/opt/airflow/logs
-    - ./plugins:/opt/airflow/plugins
-    - ./config:/opt/airflow/config
-  user: "${AIRFLOW_UID}:0"
-
-services:
-
-  postgres:
-    image: postgres:16
-    environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
-    volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "airflow"]
-      interval: 10s
-      retries: 5
-    restart: always
-
-  airflow-webserver:
-    <<: *airflow-common
-    command: webserver
-    ports:
-      - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 1g
-          cpus: "1.0"
-
-  airflow-scheduler:
-    <<: *airflow-common
-    command: scheduler
-    depends_on:
-      postgres:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 1g
-          cpus: "1.0"
-
-volumes:
-  postgres-db-volume:
+Windows
+  └── WSL2 (Ubuntu – Linux Kernel)
+        ├── Python 3.10 (venv)
+        ├── Apache Airflow
+        ├── SQLite (metadata DB – dev only)
+        ├── Scheduler
+        └── Webserver (UI :8080)
 ```
 
 ---
 
-## ▶️ How to start (CLEAN WAY)
+## 🧩 Prerequisites
+
+* Windows 10 / 11
+* 8 GB RAM (minimum)
+* Internet access
+* WSL2 enabled
+
+---
+
+## 🛠️ STEP 1 — Install WSL2 + Ubuntu
+
+Open **PowerShell as Administrator**:
 
 ```powershell
-docker compose down -v
-docker system prune -f
-docker compose up -d
+wsl --install
 ```
 
-Open UI 👉 **[http://localhost:8080](http://localhost:8080)**
-Login: `airflow / airflow`
+Restart if prompted.
+
+After restart:
+
+* Open **Ubuntu** from Start Menu
+* Create a Linux user (lowercase only)
+
+Example:
+
+```
+username: karanwsl
+password: ******
+```
 
 ---
 
-# 🧠 PRACTICE PLAN: BASIC → INTERMEDIATE (INTERVIEW‑READY)
+## 🛠️ STEP 2 — Install Python 3.10 (Supported Version)
 
-## 🟢 LEVEL 1 — Core Basics
+Inside **Ubuntu terminal**:
 
-✔ What is DAG, Task, Operator
-✔ dag_id, start_date, schedule, catchup
-✔ BashOperator, PythonOperator
+```bash
+sudo apt update
+sudo apt install -y software-properties-common
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install -y python3.10 python3.10-venv python3-pip
+```
 
-### Practice
+Verify:
 
-* Create a DAG that prints today’s date
-* Run manually vs scheduled
-* Pause & unpause DAG
-
----
-
-## 🟡 LEVEL 2 — Dependencies & Control Flow
-
-✔ task1 >> task2
-✔ BranchPythonOperator
-✔ Trigger rules (`all_success`, `one_failed`)
-
-### Practice
-
-* Branch DAG: weekday vs weekend
-* Fail a task and observe downstream behavior
+```bash
+python3.10 --version
+```
 
 ---
 
-## 🟡 LEVEL 3 — Scheduling & Backfills
+## 🛠️ STEP 3 — Create Airflow Project & Virtual Environment
 
-✔ cron vs timedelta
-✔ catchup = true / false
-✔ backfill command
+```bash
+cd ~
+mkdir airflow
+cd airflow
+python3.10 -m venv venv
+source venv/bin/activate
+```
 
-### Practice
+You should see:
 
-* DAG that runs daily from Jan 1
-* Enable catchup and observe runs
-
----
-
-## 🟠 LEVEL 4 — XComs & Variables
-
-✔ XCom push / pull
-✔ Airflow Variables
-✔ Connections (UI)
-
-### Practice
-
-* Pass value from Task A → Task B
-* Store env name in Variable
+```
+(venv) user@DESKTOP:~/airflow$
+```
 
 ---
 
-## 🟠 LEVEL 5 — Sensors & External Triggers
+## 🛠️ STEP 4 — Install Apache Airflow (Stable)
 
-✔ FileSensor
-✔ TimeSensor
-✔ TriggerDagRunOperator
-
-### Practice
-
-* DAG waits for file → then runs
-* Trigger DAG‑B from DAG‑A
+```bash
+pip install apache-airflow==2.8.4 \
+ --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.8.4/constraints-3.10.txt
+```
 
 ---
 
-## 🔵 LEVEL 6 — Failure Handling & Retry
+## 🛠️ STEP 5 — Initialize Airflow
 
-✔ retries, retry_delay
-✔ email_on_failure
-✔ SLA miss
+```bash
+export AIRFLOW_HOME=~/airflow_home
+airflow db init
+```
 
-### Practice
+Creates:
 
-* Task fails first 2 times, passes 3rd
-
----
-
-## 🔵 LEVEL 7 — Real‑World Mini Projects
-
-### 🔥 Project 1: File‑Driven Pipeline
-
-* Sensor waits for CSV
-* Python task validates data
-* Bash task moves file
-
-### 🔥 Project 2: Multi‑DAG Orchestration
-
-* Parent DAG triggers child DAG
-* Child DAG returns status
-
-### 🔥 Project 3: Parameterized DAG
-
-* DAG takes runtime params
-* Same DAG runs for dev/prod
+* airflow.cfg
+* airflow.db
+* dags/
+* logs/
 
 ---
 
-##  GOLD LINES 
+## 🛠️ STEP 6 — Create Admin User
 
-> “For local development I use **Airflow with LocalExecutor via Docker Compose**, and switch to **CeleryExecutor in production**.”
+```bash
+airflow users create \
+  --username admin \
+  --password admin \
+  --firstname Admin \
+  --lastname User \
+  --role Admin \
+  --email admin@test.com
+```
 
-> “I’ve handled scheduling, sensors, XComs, retries, and DAG‑to‑DAG orchestration.”
+---
+
+## ▶️ STEP 7 — Start Airflow (UI)
+
+### Terminal 1 — Scheduler
+
+```bash
+cd ~/airflow
+source venv/bin/activate
+export AIRFLOW_HOME=~/airflow_home
+airflow scheduler
+```
+
+### Terminal 2 — Webserver
+
+```bash
+cd ~/airflow
+source venv/bin/activate
+export AIRFLOW_HOME=~/airflow_home
+airflow webserver -p 8080
+```
+
+---
+
+## 🌐 STEP 8 — Open UI
+
+Open browser (Windows):
+
+```
+http://localhost:8080
+```
+
+Login:
+
+```
+admin / admin
+```
+
+---
+
+## 🔁 Daily Startup After PC Restart
+
+Every time you restart your PC:
+
+### 1️⃣ Open Ubuntu
+
+```powershell
+wsl -d Ubuntu -u karanwsl
+```
+
+### 2️⃣ Start Scheduler
+
+```bash
+cd ~/airflow
+source venv/bin/activate
+export AIRFLOW_HOME=~/airflow_home
+airflow scheduler
+```
+
+### 3️⃣ Start Webserver (New Terminal)
+
+```bash
+cd ~/airflow
+source venv/bin/activate
+export AIRFLOW_HOME=~/airflow_home
+airflow webserver -p 8080
+```
+
+### 4️⃣ Open UI
+
+```
+http://localhost:8080
+```
+
+---
+
+## ⚡ Make AIRFLOW_HOME Permanent (Optional)
+
+```bash
+nano ~/.bashrc
+```
+
+Add:
+
+```bash
+export AIRFLOW_HOME=$HOME/airflow_home
+```
+
+Apply:
+
+```bash
+source ~/.bashrc
+```
+
+---
+
+## 🆚 WSL2 vs Docker (CLEAR DIFFERENCE)
+
+| Feature               | WSL2            | Docker              |
+| --------------------- | --------------- | ------------------- |
+| Stability on Windows  | ⭐⭐⭐⭐⭐           | ⭐⭐⭐                 |
+| RAM usage             | Low             | High                |
+| Setup complexity      | Simple          | Complex             |
+| SQLite support        | Works perfectly | Needs volume tuning |
+| Learning friendly     | ✅ Best          | ⚠️ Heavy            |
+| Production similarity | High            | Very High           |
+
+### Verdict:
+
+* **WSL2** → Best for learning, interviews, local dev
+* **Docker** → Best for team setups & prod-like orchestration
+
+---
+
+## ⚠️ Important Notes
+
+* SQLite + SequentialExecutor = **DEV ONLY**
+* Never run Airflow from `/mnt/c`
+* Always activate venv
+* Scheduler + Webserver must both be running
 
 ---
 
 ## 🏁 Final Verdict
 
-✅ Optimized
-✅ Stable
-✅ Laptop‑friendly
-✅ Interview‑ready
+> **WSL2 is the most reliable, clean, and industry‑correct way to run Apache Airflow on a Windows laptop.**
+
+You now have a setup that:
+
+* Matches real Linux production
+* Avoids Windows filesystem bugs
+* Is stable on 8 GB RAM
 
 ---
 
-👉 Next steps available:
+🎯 Next steps (optional):
 
-* Ready‑made **practice DAGs**
-* **Interview Q&A** based on your setup
-* **ADF vs Airflow comparison**
-
-Say the word 🚀
+* Create your first DAG
+* Understand Scheduler vs Executor
+* Sensors, Triggers, DAG‑to‑DAG
+* Interview‑ready questions
