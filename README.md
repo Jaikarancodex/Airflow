@@ -453,6 +453,229 @@ BashOperator(
 
 ---
 
+## 1️ Workflow Management
+
+### Question:
+
+**What do you mean by workflow management in Airflow?**
+
+### Answer:
+
+Workflow management in Airflow refers to **defining, scheduling, executing, monitoring, and retrying tasks** in a controlled and reliable manner using DAGs.
+
+### What Airflow manages:
+
+* Task execution order
+* Scheduling & retries
+* Failure handling
+* Monitoring & alerting
+
+### What Airflow does NOT manage ❌:
+
+* Actual data processing logic
+* Streaming state management
+
+### one-liner 🏆:
+
+> “Airflow manages task orchestration, not data transformation.”
+
+---
+
+## 2️ Default Arguments (`default_args`)
+
+### Question:
+
+**What are default arguments in Airflow?**
+
+### Answer:
+
+`default_args` is a dictionary used to define **common task-level parameters** that apply to all tasks in a DAG unless overridden.
+
+### Common parameters:
+
+* `owner`
+* `retries`
+* `retry_delay`
+* `email_on_failure`
+* `start_date`
+
+### Example:
+
+```python
+from datetime import datetime, timedelta
+
+default_args = {
+    "owner": "data-team",
+    "retries": 2,
+    "retry_delay": timedelta(minutes=5)
+}
+
+with DAG(
+    dag_id="default_args_demo",
+    start_date=datetime(2024,1,1),
+    default_args=default_args,
+    schedule="@daily",
+    catchup=False
+):
+    pass
+```
+
+### tip ⚠️:
+
+* `start_date` should be **static**, not dynamic (`datetime.now()` ❌)
+
+---
+
+## 3️ Schedule Interval
+
+### Question:
+
+**What is schedule_interval in Airflow?**
+
+### Answer:
+
+`schedule_interval` defines **how often a DAG is triggered**.
+
+### Common schedules:
+
+* `@daily`
+* `@hourly`
+* `@weekly`
+* Cron expression (`0 2 * * *`)
+
+### Example:
+
+```python
+schedule="0 6 * * *"  # Runs every day at 6 AM
+```
+
+### Important clarification 🔥:
+
+* Schedule defines **logical execution time**, not actual start time
+
+### one-liner 🏆:
+
+> “Airflow schedules DAGs based on logical data intervals.”
+
+---
+
+## 4️ Catch-up
+
+### Question:
+
+**What is catchup in Airflow?**
+
+### Answer:
+
+Catchup determines whether Airflow should **run missed DAG instances** for past scheduled intervals.
+
+### Example:
+
+```python
+catchup=False
+```
+
+### Behavior:
+
+* `catchup=True` → runs all missed intervals ❌ (can overload system)
+* `catchup=False` → runs only the latest schedule ✅
+
+### Real-world usage:
+
+* Production pipelines → `catchup=False`
+* Historical backfill → `catchup=True`
+
+### One-line 🏆:
+
+> “Catchup controls backfilling of missed DAG runs.”
+
+---
+
+## 5️ Task Dependencies
+
+### Question:
+
+**How do you define task dependencies in Airflow?**
+
+### Answer:
+
+Task dependencies define the **execution order** of tasks within a DAG.
+
+### Example:
+
+```python
+task1 >> task2 >> task3
+```
+
+### Meaning:
+
+```
+task1 → task2 → task3
+```
+
+### Dependency rules:
+
+* Tasks run only after upstream succeeds
+* Failed upstream blocks downstream
+
+### best practice 🧠:
+
+> Keep dependencies simple and readable
+
+---
+
+## 6️ set_upstream() / set_downstream()
+
+### Question:
+
+**What are set_upstream and set_downstream methods?**
+
+### Answer:
+
+They are **explicit methods** used to define task dependencies programmatically.
+
+### Example:
+
+```python
+task2.set_upstream(task1)
+# OR
+task1.set_downstream(task2)
+```
+
+### Equivalent to:
+
+```python
+task1 >> task2
+```
+
+### clarification ⚠️:
+
+* `>>` and `<<` are **syntactic sugar**
+* Internally, Airflow uses `set_upstream()` / `set_downstream()`
+
+### one-liner 🏆:
+
+> “Bitshift operators are just a cleaner way to define upstream and downstream dependencies.”
+
+---
+
+## 🧠 FINAL SUMMARY 
+
+> “Airflow workflows are defined using DAGs. Default arguments provide reusable task settings. Scheduling controls execution frequency, catchup manages backfills, and dependencies define execution order using upstream and downstream relationships.”
+
+---
+
+## ⚔️ Rapid Q&A
+
+* Does schedule_interval control execution time? → ❌ No (logical time)
+* Is catchup enabled by default? → ✅ Yes (should disable in prod)
+* Can tasks run in parallel? → ✅ Yes, if no dependency
+* Are `>>` operators mandatory? → ❌ No, optional
+
+---
+
+
+
 
 
 
