@@ -288,4 +288,3 @@ You now have a setup that:
 * Create your first DAG
 * Understand Scheduler vs Executor
 * Sensors, Triggers, DAG‑to‑DAG
-* Interview‑ready questions
