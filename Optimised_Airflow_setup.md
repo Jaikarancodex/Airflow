@@ -288,3 +288,183 @@ You now have a setup that:
 * Create your first DAG
 * Understand Scheduler vs Executor
 * Sensors, Triggers, DAG‑to‑DAG
+
+🔥 **YES — YOU CAN. ABSOLUTELY.** 🔥
+And this is a **very professional thing to ask** 👌
+I’ll explain **cleanly, accurately, and practically** — no confusion.
+
+---
+
+# ✅ CAN WE RUN AIRFLOW COMMANDS IN DETACHED MODE?
+
+### 👉 **YES**, in multiple **Linux-native ways** inside WSL.
+
+We have **4 correct options**.
+I’ll rank them from **BEST → BASIC**.
+
+---
+
+# 🥇 OPTION 1 — `tmux` (BEST & MOST USED)
+
+This is what **senior engineers actually use**.
+
+### Why `tmux`?
+
+✔ Runs processes in background
+✔ Survives terminal close
+✔ Easy attach / detach
+✔ Lightweight (perfect for WSL)
+
+---
+
+## 🔧 Install tmux (one time)
+
+```bash
+sudo apt install -y tmux
+```
+
+---
+
+## 🚀 Start Airflow using tmux
+
+### 1️⃣ Start tmux session
+
+```bash
+tmux new -s airflow
+```
+
+---
+
+### 2️⃣ Start scheduler
+
+```bash
+airflow scheduler
+```
+
+Detach from tmux:
+
+```
+CTRL + B → D
+```
+
+---
+
+### 3️⃣ Start webserver in another tmux window
+
+```bash
+tmux attach -t airflow
+```
+
+Create new window:
+
+```
+CTRL + B → C
+```
+
+Then run:
+
+```bash
+airflow webserver -p 8080
+```
+
+Detach again:
+
+```
+CTRL + B → D
+```
+
+---
+
+## 🔁 Reattach anytime
+
+```bash
+tmux attach -t airflow
+```
+
+🔥 **This is the BEST solution.**
+
+---
+
+# 🥈 OPTION 2 — `nohup` (SIMPLE & EFFECTIVE)
+
+Good if you don’t want tmux.
+
+---
+
+### Start scheduler
+
+```bash
+nohup airflow scheduler > scheduler.log 2>&1 &
+```
+
+### Start webserver
+
+```bash
+nohup airflow webserver -p 8080 > webserver.log 2>&1 &
+```
+
+Check running:
+
+```bash
+ps aux | grep airflow
+```
+
+Stop later:
+
+```bash
+pkill -f "airflow scheduler"
+pkill -f "airflow webserver"
+```
+
+⚠️ Logs go into `.log` files.
+
+---
+
+# 🥉 OPTION 3 — `&` (VERY BASIC)
+
+```bash
+airflow scheduler &
+airflow webserver -p 8080 &
+```
+
+⚠️ Process **dies if terminal closes**
+❌ Not recommended
+
+---
+
+# 🏅 OPTION 4 — systemd (NOT RECOMMENDED)
+
+Possible in WSL, but:
+
+* complex
+* overkill
+* not needed for learning
+
+🚫 Skip this.
+
+---
+
+# 🏆 RECOMMENDED 
+
+### 👉 **tmux** ✅
+
+Because:
+
+* You’re learning
+* You restart laptop
+* You want control
+* You want professional practice
+
+---
+
+# 🎯 QUICK DECISION GUIDE
+
+| Tool   | Use case             |
+| ------ | -------------------- |
+| tmux   | ⭐ BEST (recommended) |
+| nohup  | Simple background    |
+| &      | Temporary            |
+| Docker | Production           |
+
+---
+
