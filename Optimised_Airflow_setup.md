@@ -8,7 +8,7 @@ This setup is:
 * ✅ Industry‑correct
 * ✅ Lightweight for **8 GB RAM**
 * ✅ Closest to real production Linux environments
-
+* ⚠️ If Anything goes wrong make sure to confrim the Important Notes Under Setup Steps
 ---
 
 ## 📌 Why WSL2 (and not native Windows)
@@ -491,6 +491,25 @@ CTRL + B → N   (next)
 CTRL + B → P   (previous)
 ```
 
+---
+
+## 🟢 TERMINATE tmux COMPLETELY (STOP EVERYTHING)❌
+
+If you are done for now and want to stop Airflow:
+
+```
+tmux kill-session -t airflow
+```
+
+Now verify:
+```
+tmux ls
+```
+
+Expected:
+```
+no server running on /tmp/tmux-...
+```
 ---
 
 ## WHAT IF YOU REALLY DON’T WANT TO RESTART?
