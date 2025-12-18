@@ -8,7 +8,7 @@ This setup is:
 * ✅ Industry‑correct
 * ✅ Lightweight for **8 GB RAM**
 * ✅ Closest to real production Linux environments
-* ⚠️ If Anything goes wrong make sure to confrim the Important Notes Under Setup Steps
+* ⚠️ If Anything goes wrong make sure to confrim the **Important Notes** Under Setup Steps
 ---
 
 ## 📌 Why WSL2 (and not native Windows)
