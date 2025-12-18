@@ -234,13 +234,231 @@ The executor defines **how and where tasks are executed**.
 * Does scheduler execute tasks? → ❌ No
 * Can DAGs trigger other DAGs? → ✅ Yes
 * Can tasks share large data? → ❌ No (only metadata via XComs)
-
-
-
-
-
 * Is Airflow streaming? → ❌ Batch orchestration only
 
 ---
+
+# Apache Airflow Operators – Interview Focused Guide ⚙️🎯
+
+This document explains **commonly asked Airflow operators** with **interview-ready definitions**, **clear examples**, **real-world use cases**, and **common traps**.
+
+---
+
+## 1️ PythonOperator
+
+### Question:
+
+**What is PythonOperator in Airflow?**
+
+### Answer:
+
+The `PythonOperator` is used to execute a **Python callable function** as a task inside a DAG.
+
+> It is mainly used for **lightweight logic**, API calls, validations, and orchestration logic.
+
+### Example:
+
+```python
+from airflow.operators.python import PythonOperator
+
+def greet():
+    print("Hello from Airflow")
+
+PythonOperator(
+    task_id="greet_task",
+    python_callable=greet
+)
+```
+
+### Real-world use cases:
+
+* Calling REST APIs
+* Validating data
+* Triggering external services
+* Preparing parameters for downstream tasks
+
+### Q traps ❌:
+
+* ❌ Not for heavy data processing
+* ❌ Not a replacement for Spark jobs
+
+###  one-liner 🏆:
+
+> “PythonOperator runs Python logic, not data processing workloads.”
+
+---
+
+## 2️ Sensor
+
+### Question:
+
+**What is a Sensor in Airflow?**
+
+### Answer:
+
+A Sensor is a **special type of operator** that **waits for a condition to be met** before allowing downstream tasks to run.
+
+### Example (FileSensor):
+
+```python
+from airflow.sensors.filesystem import FileSensor
+
+FileSensor(
+    task_id="wait_for_file",
+    filepath="/data/input.csv",
+    poke_interval=30,
+    timeout=600
+)
+```
+
+### Real-world use cases:
+
+* Wait for a file arrival
+* Wait for table creation
+* Wait for external DAG completion
+
+### Sensor modes:
+
+* `poke` → keeps checking (resource heavy)
+* `reschedule` → frees worker (recommended ✅)
+
+### one-liner 🏆:
+
+> “Sensors pause workflow execution until an external condition is satisfied.”
+
+---
+
+## 3️ SubDagOperator (IMPORTANT ⚠️)
+
+### Question:
+
+**What is SubDagOperator? Is it recommended?**
+
+### Answer:
+
+`SubDagOperator` allows running a **DAG inside another DAG**.
+
+⚠️ **IMPORTANT TRUTH:**
+
+* ❌ SubDagOperator is **deprecated / discouraged**
+* ❌ Causes scheduler performance issues
+
+### Example (Conceptual):
+
+```python
+from airflow.operators.subdag import SubDagOperator
+
+SubDagOperator(
+    task_id="subdag_task",
+    subdag=subdag_object
+)
+```
+
+### Why it is discouraged:
+
+* Shares scheduler resources
+* Difficult to scale
+* Hard to monitor
+
+### Recommended replacement ✅:
+
+* `TriggerDagRunOperator`
+
+### GOLD answer 🏆:
+
+> “SubDagOperator exists but is discouraged; TriggerDagRunOperator is the preferred approach.”
+
+---
+
+## 4️ TriggerDagRunOperator
+
+### Question:
+
+**How do you trigger one DAG from another DAG?**
+
+### Answer:
+
+`TriggerDagRunOperator` is used to **trigger another DAG** from the current DAG.
+
+### Example:
+
+```python
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+
+TriggerDagRunOperator(
+    task_id="trigger_reporting",
+    trigger_dag_id="reporting_dag"
+)
+```
+
+### Real-world use cases:
+
+* Ingestion DAG → Reporting DAG
+* Modular pipelines
+* Decoupled workflows
+
+### one-liner 🏆:
+
+> “TriggerDagRunOperator enables loosely coupled and modular DAG orchestration.”
+
+---
+
+## 5️ BashOperator
+
+### Question:
+
+**What is BashOperator used for?**
+
+### Answer:
+
+`BashOperator` is used to execute **shell commands** inside Airflow tasks.
+
+### Example:
+
+```python
+from airflow.operators.bash import BashOperator
+
+BashOperator(
+    task_id="list_files",
+    bash_command="ls -l"
+)
+```
+
+### Real-world use cases:
+
+* Running shell scripts
+* Triggering CLI tools
+* Calling Spark-submit, dbt, or system commands
+
+### Q traps ❌:
+
+* ❌ Not portable across OS
+* ❌ Avoid embedding complex logic
+
+### one-liner 🏆:
+
+> “BashOperator is best for simple command execution and CLI-based integrations.”
+
+---
+
+##  FINAL COMPARISON TABLE 
+
+| Operator              | Purpose             | Key Note               |
+| --------------------- | ------------------- | ---------------------- |
+| PythonOperator        | Run Python code     | Lightweight logic only |
+| Sensor                | Wait for condition  | Use reschedule mode    |
+| SubDagOperator        | Nested DAG          | Deprecated / avoid     |
+| TriggerDagRunOperator | Trigger another DAG | Best practice          |
+| BashOperator          | Run shell commands  | Simple commands only   |
+
+---
+
+## 🎯 Summary
+
+> “Airflow provides different operators for different responsibilities. PythonOperator handles logic, Sensors handle waiting, TriggerDagRunOperator enables DAG orchestration, and BashOperator runs shell commands. SubDagOperator exists but is discouraged in favor of DAG-to-DAG triggering.”
+
+---
+
+
 
 
