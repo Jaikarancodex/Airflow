@@ -325,31 +325,108 @@ sudo apt install -y tmux
 
 ---
 
-## 🚀 Start Airflow using tmux
+### 👉 **You CANNOT safely “attach” an already-running Airflow scheduler/webserver to tmux**
 
-### 1️⃣ Start tmux session
+If they were started in a **normal terminal**.
+
+Why?
+
+* Those processes are **bound to that terminal’s TTY**
+* tmux creates a **new virtual TTY**
+* Linux does **not** support moving a live process between TTYs (by default)
+
+⚠️ Tools like `reptyr` exist, but:
+
+* require root
+* unreliable
+* NOT recommended
+* NOT interview-expected
+
+👉 **Professional practice is: stop → restart in tmux**.
+
+This is NOT a limitation of you — it’s how Linux works.
+
+---
+
+# ✅ CORRECT & PROFESSIONAL WAY (USED EVERYWHERE)
+
+## 🔁 SCENARIO YOU ARE IN (If your terminals in running)
+
+* Terminal 1 → `airflow scheduler` running
+* Terminal 2 → `airflow webserver` running
+* You want:
+
+  * close terminals
+  * keep Airflow running
+  * see logs later
+
+### ✔ The RIGHT solution:
+
+👉 **Restart both inside tmux**
+
+---
+
+# 🥇 STEP-BY-STEP: MOVE AIRFLOW INTO DETACHED MODE (tmux)
+
+## 🟢 STEP 1 — STOP CURRENT PROCESSES
+
+In both terminals press:
+
+```
+CTRL + C
+```
+
+This stops:
+
+* scheduler
+* webserver
+
+(Stopping is safe — no data loss.)
+
+---
+
+## 🟢 STEP 2 — START tmux SESSION
 
 ```bash
 tmux new -s airflow
 ```
 
+You are now **inside tmux**.
+
+<img width="1851" height="430" alt="Screenshot 2025-12-18 163842" src="https://github.com/user-attachments/assets/754e117f-fd68-4857-b3d9-5e17f9bc5a97" />
+
 ---
 
-### 2️⃣ Start scheduler
+## 🟢 STEP 3 — START SCHEDULER (INSIDE tmux)
 
 ```bash
+cd ~/airflow
+source venv/bin/activate
+export AIRFLOW_HOME=~/airflow_home
 airflow scheduler
 ```
 
-Detach from tmux:
-
-```
-CTRL + B → D
-```
+<img width="1232" height="421" alt="Screenshot 2025-12-18 164041" src="https://github.com/user-attachments/assets/5c66d159-0826-4282-aa44-d1484dfee00a" />
 
 ---
 
-### 3️⃣ Start webserver in another tmux window
+## 🟢 STEP 4 — DETACH (KEEP IT RUNNING)
+
+Press:
+
+```
+CTRL + B  →  D
+```
+
+Scheduler is now running **in background** ✅
+
+<img width="1218" height="54" alt="Screenshot 2025-12-18 164248" src="https://github.com/user-attachments/assets/35c4bcc4-b09e-4e49-b440-45cd02f6bf58" />
+
+---
+
+## 🟢 STEP 5 — ADD WEBSERVER IN SAME tmux SESSION
+
+Reattach:
 
 ```bash
 tmux attach -t airflow
@@ -358,14 +435,19 @@ tmux attach -t airflow
 Create new window:
 
 ```
-CTRL + B → C
+CTRL + B  →  C
 ```
 
-Then run:
+Now run:
 
 ```bash
+cd ~/airflow
+source venv/bin/activate
+export AIRFLOW_HOME=~/airflow_home
 airflow webserver -p 8080
 ```
+
+<img width="1086" height="173" alt="Screenshot 2025-12-18 164437" src="https://github.com/user-attachments/assets/5489e385-c113-4eac-914d-f15ea36b0faa" />
 
 Detach again:
 
@@ -373,17 +455,80 @@ Detach again:
 CTRL + B → D
 ```
 
+<img width="1060" height="109" alt="Screenshot 2025-12-18 164452" src="https://github.com/user-attachments/assets/f6564c9c-4461-46a5-9830-1b31eb483927" />
+
+
 ---
 
-## 🔁 Reattach anytime
+# 🎉 RESULT (THIS IS WHAT YOU WANT)
+
+✔ You can close all terminals
+✔ Airflow keeps running
+✔ UI stays available at `localhost:8080`
+✔ Logs are visible when you reattach
+
+<img width="1919" height="979" alt="Screenshot 2025-12-18 164531" src="https://github.com/user-attachments/assets/3f4b0438-051d-4d7b-8f40-22bfe72ab858" />
+
+---
+
+# 🔁 HOW TO SEE OUTPUTS LATER (VERY IMPORTANT)
+
+## Reattach anytime:
 
 ```bash
 tmux attach -t airflow
 ```
 
-🔥 **This is the BEST solution.**
+Switch between:
+
+* scheduler window
+* webserver window
+
+Using:
+
+```
+CTRL + B → N   (next)
+CTRL + B → P   (previous)
+```
 
 ---
+
+## WHAT IF YOU REALLY DON’T WANT TO RESTART?
+
+Only alternative (not recommended):
+
+```bash
+nohup airflow scheduler > scheduler.log 2>&1 &
+nohup airflow webserver -p 8080 > webserver.log 2>&1 &
+```
+
+Then view logs:
+
+```bash
+tail -f scheduler.log
+tail -f webserver.log
+```
+
+❌ No interaction
+❌ Harder debugging
+❌ Less professional
+
+---
+
+## 🎯 VERY IMPORTANT
+
+If asked:
+
+> Can you move a running process to detached mode?
+
+Answer:
+
+> **“No, a running process can’t be retroactively attached to tmux. Best practice is to restart long-running services inside tmux or nohup.”**
+
+🔥 That answer = **strong Linux fundamentals**.
+
+---
+
 
 # 🥈 OPTION 2 — `nohup` (SIMPLE & EFFECTIVE)
 
@@ -480,4 +625,19 @@ So detach mode allows:
 * ✔ Background execution
 * ✔ Laptop sleep / resume
 * ✔ Multiple terminals free
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
