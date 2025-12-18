@@ -468,3 +468,16 @@ Because:
 
 ---
 
+## ⚠️ WHY DETACH MODE MATTERS FOR AIRFLOW
+
+#### Airflow needs long-running processes:
+
+* Scheduler
+* Webserver
+
+### You cannot sit and watch logs all day!!! 😄
+So detach mode allows:
+* ✔ Background execution
+* ✔ Laptop sleep / resume
+* ✔ Multiple terminals free
+
