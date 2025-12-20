@@ -13,7 +13,7 @@ This setup is:
 
 ---
 
-# ❓ Why NOT Docker (Honest Section)
+# ❓ Why NOT Docker 
 
 Docker is powerful — but **powerful does not mean appropriate for beginners**.
 
