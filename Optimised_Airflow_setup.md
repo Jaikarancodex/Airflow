@@ -13,7 +13,7 @@ This setup is:
 
 ---
 
-# ❓ Why NOT Docker 
+# 💥 Why NOT Docker? 
 
 Docker is powerful — but **powerful does not mean appropriate for beginners**.
 
@@ -36,7 +36,7 @@ You end up learning **Docker problems**, not **Airflow concepts**.
 
 ---
 
-### 🧠 Why WSL2 Wins for Learning Airflow
+## 💥 Why WSL2 Wins for Learning Airflow
 
 WSL2 gives you:
 
@@ -61,7 +61,7 @@ Not on:
 
 ---
 
-### 🧑‍💼 Industry Reality (Important Truth)
+## 💥 Industry Reality (Important Truth)
 
 * **Developers** often use Linux/WSL locally
 * **Teams** use Docker only when collaboration is needed
@@ -75,7 +75,7 @@ WSL2 → Airflow Concepts → Docker → Kubernetes / MWAA
 
 Skipping WSL2 and jumping straight to Docker is like:
 
-> Learning Kubernetes before learning Linux 😵‍💫
+> Learning Kubernetes before learning Linux 
 
 ---
 
@@ -90,7 +90,7 @@ This guide intentionally uses **WSL2 first**, because **clarity beats complexity
 
 ---
 
-# 🆚 WSL2 vs Docker (CLEAR COMPARISON)
+# 💥 WSL2 vs Docker (CLEAR COMPARISON)
 
 | Feature               | WSL2            | Docker       |
 | --------------------- | --------------- | ------------ |
@@ -122,13 +122,13 @@ Running Airflow directly on Windows often fails due to:
 * Windows Defender / Antivirus interference
 * Path and symlink problems
 
-👉 **WSL2 provides a real Linux kernel**, so Airflow behaves exactly like it does on production servers.
+ **WSL2 provides a real Linux kernel**, so Airflow behaves exactly like it does on production servers.
 
 ---
 
-# 🛠️ WSL Setup
+# 💥 WSL Setup🛠️
 
-## 🧠 Architecture Overview
+## 📂 Architecture Overview
 
 ```
 Windows
@@ -142,7 +142,7 @@ Windows
 
 ---
 
-## 🧩 Prerequisites
+## 🧪 Prerequisites
 
 * Windows 10 / 11
 * Minimum **8 GB RAM**
@@ -151,7 +151,7 @@ Windows
 
 ---
 
-## 🛠️ STEP 1 — Install WSL2 + Ubuntu
+## ✔ STEP 1 — Install WSL2 + Ubuntu
 
 Open **PowerShell as Administrator**:
 
@@ -175,7 +175,7 @@ password: ******
 
 ---
 
-## 🛠️ STEP 2 — Install Python 3.10 (Supported Version)
+## ✔ STEP 2 — Install Python 3.10 (Supported Version)
 
 Inside Ubuntu terminal:
 
@@ -195,7 +195,7 @@ python3.10 --version
 
 ---
 
-## 🛠️ STEP 3 — Create Airflow Project & Virtual Environment
+## ✔ STEP 3 — Create Airflow Project & Virtual Environment
 
 ```bash
 cd ~
@@ -213,7 +213,7 @@ You should see:
 
 ---
 
-## 🛠️ STEP 4 — Install Apache Airflow (Stable)
+## ✔ STEP 4 — Install Apache Airflow (Stable)
 
 ```bash
 pip install apache-airflow==2.8.4 \
@@ -222,7 +222,7 @@ pip install apache-airflow==2.8.4 \
 
 ---
 
-## 🛠️ STEP 5 — Initialize Airflow
+## ✔ STEP 5 — Initialize Airflow
 
 ```bash
 export AIRFLOW_HOME=~/airflow_home
@@ -241,7 +241,7 @@ plugins/
 
 ---
 
-## 🛠️ STEP 6 — Create Admin User
+## ✔ STEP 6 — Create Admin User
 
 ```bash
 airflow users create \
@@ -255,7 +255,7 @@ airflow users create \
 
 ---
 
-## ▶️ STEP 7 — Start Airflow Services
+## ✔ STEP 7 — Start Airflow Services🚀
 
 ### Terminal 1 — Scheduler
 
@@ -293,17 +293,17 @@ admin / admin
 
 ---
 
-# 🔁 Daily Startup After PC Restart
+# 💥 Daily Startup After PC Restart🔁
 
 Every time you restart your PC:
 
-### 1️⃣ Open Ubuntu
+### ✔ Open Ubuntu
 
 ```bash
 wsl -d Ubuntu -u karanwsl
 ```
 
-### 2️⃣ Start Scheduler
+### ✔ Start Scheduler
 
 ```bash
 cd ~/airflow
@@ -312,7 +312,7 @@ export AIRFLOW_HOME=~/airflow_home
 airflow scheduler
 ```
 
-### 3️⃣ Start Webserver (New Terminal)
+### ✔ Start Webserver (New Terminal) 
 
 ```bash
 cd ~/airflow
@@ -321,7 +321,7 @@ export AIRFLOW_HOME=~/airflow_home
 airflow webserver -p 8080
 ```
 
-### 4️⃣ Open UI
+### ✔ Open UI 
 
 ```
 http://localhost:8080
@@ -329,7 +329,7 @@ http://localhost:8080
 
 ---
 
-## ⚡ Make AIRFLOW_HOME Permanent (Recommended)
+## 💥 Make AIRFLOW_HOME Permanent (Recommended)
 
 ```bash
 nano ~/.bashrc
@@ -349,17 +349,17 @@ source ~/.bashrc
 
 ---
 
-# 🧑‍💻 The **Third Terminal** (Daily Developer Workflow)
+# 💥 The **Third Terminal** (Daily Developer Workflow)
 
 One of the most common confusions for beginners is **which terminal is used for what**. This section clarifies the **third terminal**, its purpose, and why it is critical for learning and daily Airflow usage.
 
 ---
 
-## 🖥️ The Three-Terminal Mental Model (Industry Reality)
+##  The Three-Terminal Mental Model (Industry Reality)
 
 When working with Airflow locally, you should think in **three separate terminals**, each with a **single responsibility**.
 
-### 🔁 Terminal 1 — Scheduler (Brain 🧠)
+###  ✔  Terminal 1 — Scheduler (Brain)
 
 Purpose:
 
@@ -380,7 +380,7 @@ Rule:
 
 ---
 
-### ⚙️ Terminal 2 — Webserver (UI 🖥️)
+### ✔  Terminal 2 — Webserver (UI)
 
 Purpose:
 
@@ -400,7 +400,7 @@ Rule:
 
 ---
 
-### ✍️ Terminal 3 — **Developer / Working Terminal** (MOST IMPORTANT 🔥)
+### ✔  Terminal 3 — **Developer / Working Terminal** (MOST IMPORTANT)
 
 Purpose:
 
@@ -432,13 +432,13 @@ Use cases:
 
 Golden rule:
 
-> 🧠 **Scheduler reads. Webserver shows. Third terminal builds.**
+>  **Scheduler reads. Webserver shows. Third terminal builds.**
 
 ---
 
-# 🧹 WHAT TO DO AFTER SETUP (VERY IMPORTANT)
+# 💥 WHAT TO DO AFTER SETUP (VERY IMPORTANT)🧹
 
-## 1️⃣ Disable Example DAGs (MANDATORY)
+## ✔ Disable Example DAGs (MANDATORY)
 
 ```bash
 nano $AIRFLOW_HOME/airflow.cfg
@@ -454,7 +454,7 @@ Restart scheduler + webserver.
 
 ---
 
-## 2️⃣ Delete Extra DAGs
+## ✔ Delete Extra DAGs
 
 ```bash
 rm -f $AIRFLOW_HOME/dags/*.py
@@ -464,7 +464,7 @@ Clean UI = faster learning.
 
 ---
 
-## 3️⃣ Create Your First DAG
+## ✔ Create Your First DAG
 
 ```bash
 cd $AIRFLOW_HOME/dags
@@ -493,7 +493,7 @@ Trigger it from UI and verify logs.
 
 ---
 
-## 4️⃣ Verify Correct Folder Usage
+## ✔ Verify Correct Folder Usage
 
 ✅ Always use:
 
@@ -541,9 +541,9 @@ You now have a setup that:
 * 
 ---
 
-## ✅ CAN WE RUN AIRFLOW COMMANDS IN DETACHED MODE?
+## 💥 CAN WE RUN AIRFLOW COMMANDS IN DETACHED MODE?
 
-### 👉 **YES**, in multiple **Linux-native ways** inside WSL.
+### ✅ **YES**, in multiple **Linux-native ways** inside WSL.
 
 We have **4 correct options**.
 I’ll rank them from **BEST → BASIC**.
@@ -551,14 +551,14 @@ I’ll rank them from **BEST → BASIC**.
 ---
 
 
-## ⚠️ WHY DETACH MODE MATTERS FOR AIRFLOW
+## 💥 WHY DETACH MODE MATTERS FOR AIRFLOW⚠️
 
 #### Airflow needs long-running processes:
 
 * Scheduler
 * Webserver
 
-### You cannot sit and watch logs all day!!! 😄
+### You cannot sit and watch logs all day!!! 
 So detach mode allows:
 * ✔ Background execution
 * ✔ Laptop sleep / resume
@@ -566,7 +566,7 @@ So detach mode allows:
 
 ---
 
-### 🥇 OPTION 1 — `tmux` (BEST & MOST USED)
+## 💥 OPTION 1 — `tmux` (BEST & MOST USED)🥇
 
 This is what **senior engineers actually use**.
 
@@ -579,7 +579,7 @@ This is what **senior engineers actually use**.
 
 ---
 
-## 🔧 Install tmux (one time)
+## ✔  Install tmux (one time)
 
 ```bash
 sudo apt install -y tmux
@@ -587,7 +587,7 @@ sudo apt install -y tmux
 
 ---
 
-### 👉 **You CANNOT safely “attach” an already-running Airflow scheduler/webserver to tmux**
+###  **You CANNOT safely “attach” an already-running Airflow scheduler/webserver to tmux**
 
 If they were started in a **normal terminal**.
 
@@ -604,15 +604,15 @@ Why?
 * NOT recommended
 * NOT interview-expected
 
-👉 **Professional practice is: stop → restart in tmux**.
+ **Professional practice is: stop → restart in tmux**.
 
 This is NOT a limitation of you — it’s how Linux works.
 
 ---
 
-# ✅ CORRECT & PROFESSIONAL WAY (USED EVERYWHERE)
+## 💥 CORRECT & PROFESSIONAL WAY (USED EVERYWHERE)
 
-## 🔁 SCENARIO YOU ARE IN (If your terminals in running)
+### ✔  SCENARIO YOU ARE IN (If your terminals in running)
 
 * Terminal 1 → `airflow scheduler` running
 * Terminal 2 → `airflow webserver` running
@@ -624,13 +624,13 @@ This is NOT a limitation of you — it’s how Linux works.
 
 ### ✔ The RIGHT solution:
 
-👉 **Restart both inside tmux**
+ **Restart both inside tmux**
 
 ---
 
-# 🥇 STEP-BY-STEP: MOVE AIRFLOW INTO DETACHED MODE (tmux)
+## 💥 STEP-BY-STEP: MOVE AIRFLOW INTO DETACHED MODE (tmux)
 
-## 🟢 STEP 1 — STOP CURRENT PROCESSES
+## ✔  STEP 1 — STOP CURRENT PROCESSES
 
 In both terminals press:
 
@@ -647,7 +647,7 @@ This stops:
 
 ---
 
-## 🟢 STEP 2 — START tmux SESSION
+## ✔  STEP 2 — START tmux SESSION
 
 ```bash
 tmux new -s airflow
@@ -659,7 +659,7 @@ You are now **inside tmux**.
 
 ---
 
-## 🟢 STEP 3 — START SCHEDULER (INSIDE tmux)
+## ✔  STEP 3 — START SCHEDULER (INSIDE tmux)
 
 ```bash
 cd ~/airflow
@@ -672,7 +672,7 @@ airflow scheduler
 
 ---
 
-## 🟢 STEP 4 — DETACH (KEEP IT RUNNING)
+## ✔  STEP 4 — DETACH (KEEP IT RUNNING)
 
 Press:
 
@@ -686,7 +686,7 @@ Scheduler is now running **in background** ✅
 
 ---
 
-## 🟢 STEP 5 — ADD WEBSERVER IN SAME tmux SESSION
+## ✔  STEP 5 — ADD WEBSERVER IN SAME tmux SESSION
 
 Reattach:
 
@@ -722,7 +722,7 @@ CTRL + B → D
 
 ---
 
-# 🎉 RESULT (THIS IS WHAT YOU WANT)
+###  ✔  RESULT (THIS IS WHAT YOU WANT)🎉
 
 ✔ You can close all terminals
 ✔ Airflow keeps running
@@ -733,9 +733,9 @@ CTRL + B → D
 
 ---
 
-# 🔁 HOW TO SEE OUTPUTS LATER (VERY IMPORTANT)
+## 💥 HOW TO SEE OUTPUTS LATER (VERY IMPORTANT)🔁
 
-## Reattach anytime:
+## ✔  Reattach anytime:
 
 ```bash
 tmux attach -t airflow
@@ -755,7 +755,7 @@ CTRL + B → P   (previous)
 
 ---
 
-## 🟢 TERMINATE tmux COMPLETELY (STOP EVERYTHING)❌
+## ✔  TERMINATE tmux COMPLETELY (STOP EVERYTHING)❌
 
 If you are done for now and want to stop Airflow:
 
@@ -774,7 +774,7 @@ no server running on /tmp/tmux-...
 ```
 ---
 
-## WHAT IF YOU REALLY DON’T WANT TO RESTART?
+## ✔  WHAT IF YOU REALLY DON’T WANT TO RESTART?
 
 Only alternative (not recommended):
 
@@ -810,7 +810,7 @@ Answer:
 ---
 
 
-# 🥈 OPTION 2 — `nohup` (SIMPLE & EFFECTIVE)
+## 💥 OPTION 2 — `nohup` (SIMPLE & EFFECTIVE)🥈
 
 Good if you don’t want tmux.
 
@@ -845,7 +845,7 @@ pkill -f "airflow webserver"
 
 ---
 
-# 🥉 OPTION 3 — `&` (VERY BASIC)
+## 💥 OPTION 3 — `&` (VERY BASIC)🥉
 
 ```bash
 airflow scheduler &
@@ -857,7 +857,7 @@ airflow webserver -p 8080 &
 
 ---
 
-# 🏅 OPTION 4 — systemd (NOT RECOMMENDED)
+## 💥 OPTION 4 — systemd (NOT RECOMMENDED)🏅
 
 Possible in WSL, but:
 
@@ -871,7 +871,7 @@ Possible in WSL, but:
 
 # 🏆 RECOMMENDED 
 
-### 👉 **tmux** ✅
+### **tmux** ✅
 
 Because:
 
