@@ -413,8 +413,9 @@ This is the terminal you actively **type in all day**.
 
 Typical commands used **today**:
 
+---
 
-## 💥 THE REAL PROBLEM (NO GUESSING)
+## 💥 THE REAL PROBLEM (If it is not working)
 
 ```
 echo $AIRFLOW_HOME
