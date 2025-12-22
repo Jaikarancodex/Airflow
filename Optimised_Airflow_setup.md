@@ -757,10 +757,10 @@ You now have a setup that:
 * Understand Scheduler vs Executor
 * Learn XCom, Sensors, Triggers
 * Build a mini ETL pipeline
-* 
+  
 ---
 
-## 💥 CAN WE RUN AIRFLOW COMMANDS IN DETACHED MODE?
+# 💥 CAN WE RUN AIRFLOW COMMANDS IN DETACHED MODE?
 
 ### ✅ **YES**, in multiple **Linux-native ways** inside WSL.
 
