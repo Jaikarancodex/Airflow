@@ -413,6 +413,225 @@ This is the terminal you actively **type in all day**.
 
 Typical commands used **today**:
 
+
+## 💥 THE REAL PROBLEM (NO GUESSING)
+
+```
+echo $AIRFLOW_HOME
+→ (EMPTY)
+```
+
+* **AIRFLOW_HOME IS NOT SET AT ALL** 
+* Airflow is running with **DEFAULT behavior**
+  * Default Airflow home = `~/airflow`
+
+---
+
+## 💥 WHAT SHOULD EXIST 
+
+A valid Airflow home MUST contain 👇
+
+```
+airflow.cfg
+dags/
+logs/
+plugins/
+```
+
+If your folder has:
+
+```
+venv/
+```
+
+This means **Airflow was never initialized properly**
+
+---
+
+## 💥 FIX (CLEAN + CORRECT WAY )
+
+We’ll do this **step-by-step**, no shortcuts 
+
+---
+
+## ✔ STEP 1: STOP EVERYTHING (IMPORTANT)
+
+In scheduler terminal → `CTRL + C`
+In executor/worker terminal → `CTRL + C`
+
+All Airflow processes should STOP 🛑
+
+---
+
+## ✔ STEP 2: CREATE A PROPER AIRFLOW HOME (DO THIS EXACTLY)
+
+ In a **NEW NORMAL TERMINAL (Terminal 3)**
+
+```bash
+mkdir -p ~/airflow_home
+```
+
+Now **set AIRFLOW_HOME** 
+
+```bash
+export AIRFLOW_HOME=~/airflow_home
+```
+
+Verify:
+
+```bash
+echo $AIRFLOW_HOME
+```
+
+You MUST see:
+
+```
+/home/karanwsl/airflow_home
+```
+
+---
+
+## ✔ STEP 3: ACTIVATE VENV (IMPORTANT)
+
+Your venv is here:
+
+```
+~/airflow/venv
+```
+
+Activate it 
+
+```bash
+source ~/airflow/venv/bin/activate
+```
+
+You should see:
+
+```
+(venv)
+```
+
+---
+
+## ✔  STEP 4: INITIALIZE AIRFLOW (THIS CREATES DAGS FOLDER)
+
+```bash
+airflow db init
+```
+
+Now check 
+
+```bash
+ls $AIRFLOW_HOME
+```
+
+You MUST see:
+
+```
+airflow.cfg
+dags
+logs
+plugins
+```
+
+🎉 NOW Airflow is FINALLY set up correctly
+
+---
+
+## ✔ STEP 5: START AIRFLOW PROPERLY (2 TERMINALS)
+
+### 🖥️ Terminal 1 — Scheduler
+
+```bash
+export AIRFLOW_HOME=~/airflow_home
+source ~/airflow/venv/bin/activate
+airflow scheduler
+```
+
+### 🖥️ Terminal 2 — Webserver
+
+```bash
+export AIRFLOW_HOME=~/airflow_home
+source ~/airflow/venv/bin/activate
+airflow webserver
+```
+
+(If you were using LocalExecutor/Celery before — we’ll handle that later)
+
+---
+
+## ✔ STEP 6: NOW CREATE DAG 
+
+ Terminal 3 (normal working terminal):
+
+```bash
+export AIRFLOW_HOME=~/airflow_home
+source ~/airflow/venv/bin/activate
+cd $AIRFLOW_HOME/dags
+nano first_dag.py
+```
+
+Paste 
+
+```python
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from datetime import datetime
+
+with DAG(
+    dag_id="first_dag",
+    start_date=datetime(2024, 1, 1),
+    schedule_interval=None,
+    catchup=False
+) as dag:
+
+    hello = BashOperator(
+        task_id="say_hello",
+        bash_command="echo 'Hello Airflow 🚀'"
+    )
+```
+
+Save & exit 
+
+---
+
+## ✔ STEP 7: CHECK UI (MOMENT OF TRUTH 😎)
+
+Open browser:
+
+```
+http://localhost:8080
+```
+
+You SHOULD see:
+
+```
+first_dag
+```
+
+Trigger → Green → Logs show `Hello Airflow 🚀`
+
+---
+
+## 🚨 VERY IMPORTANT (PERMANENT FIX)
+
+Right now `AIRFLOW_HOME` is temporary 
+Let’s make it **permanent** 
+
+```bash
+nano ~/.bashrc
+```
+
+Add at bottom:
+
+```bash
+export AIRFLOW_HOME=~/airflow_home
+```
+
+Save → restart terminal 
+
+---
+
 ```bash
 cd $AIRFLOW_HOME/dags
 nano first_dag.py
