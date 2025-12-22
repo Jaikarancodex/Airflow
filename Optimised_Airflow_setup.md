@@ -596,7 +596,7 @@ Save & exit
 
 ---
 
-## ✔ STEP 7: CHECK UI (MOMENT OF TRUTH 😎)
+## ✔ STEP 7: CHECK UI 
 
 Open browser:
 
