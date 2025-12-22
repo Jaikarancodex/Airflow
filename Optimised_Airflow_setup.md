@@ -557,7 +557,7 @@ source ~/airflow/venv/bin/activate
 airflow webserver
 ```
 
-(If you were using LocalExecutor/Celery before — we’ll handle that later)
+(If you were using LocalExecutor/Celery before — handle that later)
 
 ---
 
