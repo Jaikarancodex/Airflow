@@ -417,7 +417,6 @@ Typical commands used **today**:
 cd $AIRFLOW_HOME/dags
 nano first_dag.py
 nano dependency_dag.py
-rm -f *.py
 ls
 python dependency_dag.py
 touch dependency_dag.py
